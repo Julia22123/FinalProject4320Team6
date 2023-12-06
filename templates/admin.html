@@ -13,22 +13,22 @@
     <!--title of our project to show up on the tab-->
     <title>IT4320 Team6 Final Project</title>
     <!--link to external css style sheet-->
-    <link rel="stylesheet" href="adminStyle.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/adminStyle.css') }}">
 </head>
 
 <!--body-->
 <body>
     <!--to show user where they are in our website and links to help them switch pages-->
     <div class="navbar">
-        <a href="index.html">Home</a>
-        <a class="active" href="admin.html">Admin</a>
-        <a href="reservations.html">Reservations</a>
+        <a href="{{url_for('index')}}">Home</a>
+        <a href="{{url_for('admin')}}">Admin</a>
+        <a href="{{url_for('reservations')}}">Reservations</a>
     </div>
-
+    {% if login == False %}
     <h1>Administrator Login</h1>
 
     <!--need code for checking the input from the passcodes.txt-->
-    <form action="action_page.php" method="post">
+    <form method="post">
         <div class="container">
           <label for="uname"><b>Username</b></label>
           <br>
@@ -38,9 +38,13 @@
           <br>
           <input type="password" placeholder="Enter Password" name="psw" required>
       
-          <button type="submit">LOGIN</button>
+          <button type="submit">Login</button>
         </div>
     </form>
-
+    {% endif %}
+    {% if login == True %}
+    <p>Total Sales: {{ sales }}</p>
+    <p> Chart: {{seats}}</p>
+    {% endif %}
 </body>
 </html>

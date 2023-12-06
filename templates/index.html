@@ -11,7 +11,7 @@
     <!--title of our project to show up on the tab-->
     <title>IT4320 Team6 Final Project</title>
     <!--link to external css style sheet-->
-    <link rel="stylesheet" href="indexStyle.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/indexStyle.css') }}">
 </head>
 
 <!--body-->
@@ -19,9 +19,9 @@
 
     <!--to show user where they are in our website and links to help them switch pages-->
     <div class="navbar">
-        <a class="active" href="index.html">Home</a>
-        <a href="admin.html">Admin</a>
-        <a href="reservations.html">Reservations</a>
+        <a href="{{url_for('index')}}">Home</a>
+        <a href="{{url_for('admin')}}">Admin</a>
+        <a href="{{url_for('reservations')}}">Reservations</a>
     </div>
 
     <div class="body">
@@ -32,16 +32,14 @@
         <!--our menu-->
         <!--still need to make to submit button work/respond to selected option and open the page link-->
         <div class="container">
-            <form action="action_page.php">
+            <form method = "post">
                 <select id="Menu" name="Menu">
                     <option value="choose">Choose an Option</option>
                     <option value="AdminLogin">Admin Login</option>
                     <option value="ReserveSeat">Reserve a Seat</option>
                 </select>
+                <button type="submit">Submit</button>
                 </form>
-                </div>
-                <br>
-                <input type="submit" value="Submit">
             </form>
         </div>
     </div>

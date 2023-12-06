@@ -17,16 +17,16 @@
     <!--title of our project to show up on the tab-->
     <title>IT4320 Team6 Final Project</title>
     <!--link to external css style sheet-->
-    <link rel="stylesheet" href="resStyle.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/resStyle.css') }}">
 </head>
 
 <!--body-->
 <body>
     <!--to show user where they are in our website and links to help them switch pages-->
     <div class="navbar">
-        <a href="index.html">Home</a>
-        <a href="admin.html">Admin</a>
-        <a class="active" href="reservations.html">Reservations</a>
+        <a href="{{url_for('index')}}">Home</a>
+        <a href="{{url_for('admin')}}">Admin</a>
+        <a href="{{url_for('reservations')}}">Reservations</a>
     </div>
 
     <h1>Reserve Your Seat</h1>
@@ -39,13 +39,7 @@
     <!--Need to code the seating chart in from reservations.txt-->
     <div class="chart">
     <p>
-        Make the seating chart show up example:
-        <br>
-        ['O', 'X', 'X', 'O']
-        <br>
-        ['O', 'O', 'O', 'O']
-        <br>
-        ... etc
+       {{ seats }}
     </p>
 </div>
 
