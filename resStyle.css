@@ -1,0 +1,82 @@
+body{
+    background-color: #C0C2C9;
+    font-size: 17px;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+.chart{
+    width: 20%;
+    background-color: white;
+    font-size: 17px;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: auto;
+}
+  
+  /* Style the navigation menu */
+  .navbar {
+    width: 100%;
+    background-color: #555;
+    overflow: auto;
+  }
+  
+  /* Navigation links */
+  .navbar a {
+    float: left;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+    width: 20%; /*for equal-width links*/
+    text-align: center; /*if you want the text to be centered */
+  }
+  
+  /* Add a background color on mouse-over */
+  .navbar a:hover {
+    background-color: #000;
+  }
+  
+  /* Style the current/active link */
+  .navbar a.active {
+    background-color: #04AA6D;
+  }
+  
+  /* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
+  @media screen and (max-width: 500px) {
+    .navbar a {
+      float: none;
+      display: block;
+      width: 100%;
+      text-align: left; /* If you want the text to be left-aligned on small screens */
+    }
+  }
+
+/*form*/
+/* Style inputs with type="text", select elements and textareas */
+input[type=text], select, textarea {
+    width: 50%; /* Full width */
+    padding: 12px; /* Some padding */ 
+    border: 1px solid #ccc; /* Gray border */
+    border-radius: 4px; /* Rounded borders */
+    box-sizing: border-box; /* Make sure that padding and width stays in place */
+    margin-top: 6px; /* Add a top margin */
+    margin-bottom: 16px; /* Bottom margin */
+    resize: vertical /* Allow the user to vertically resize the textarea (not horizontally) */
+  }
+  
+  /* Style the submit button with a specific background color etc */
+  input[type=submit] {
+    background-color: #04AA6D;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* When moving the mouse over the submit button, add a darker green color */
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  

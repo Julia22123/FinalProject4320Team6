@@ -22,13 +22,82 @@
 
 <!--body-->
 <body>
+    <!--to show user where they are in our website-->
+    <!--later on, maybe change the links to text-->
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="admin.html">Admin</a>
+        <a class="active" href="reservations.html">Reservations</a>
+    </div>
+
     <h1>Reserve Your Seat</h1>
 
-    <ul>
-        <!--links to other pages which will be removed later on-->
-        <li><a href="index.html">Home</a></li>
-        <li><a href="admin.html">Admin</a></li>
-        <li><a href="reservations.html">Reservations</a></li>
-    </ul>
+    <!--need congrats message here to show that the user's input was saved and show eticket-->
+    <!--Need code for generating eticket-->
+
+    <h2>Seating Chart</h2>
+    <p>X = Reserved Seat || O = Available Seat</p>
+    <!--Need to code the seating chart in from reservations.txt-->
+    <div class="chart">
+    <p>
+        Make the seating chart show up example:
+        <br>
+        ['O', 'X', 'X', 'O']
+        <br>
+        ['O', 'O', 'O', 'O']
+        <br>
+        ... etc
+    </p>
+</div>
+
+    <div class="container">
+        <form action="action_page.php">
+      
+          <label for="fname">First Name</label>
+          <br>
+          <input type="text" id="fname" name="firstname" placeholder="First Name">
+          <br>
+          <label for="lname">Last Name</label>
+          <br>
+          <input type="text" id="lname" name="lastname" placeholder="Last Name">
+          <br>
+
+          <label for="Row">Choose a Row:</label>
+          <br>
+          <select id="row" name="row">
+            <br>
+            <option value="choose">Choose a Row</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+          </select>
+
+          <br>
+          <label for="seat">Choose a Seat:</label>
+          <br>
+          <select id="seat" name="seat">
+            <option value="choose">Choose an Seat</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+          <br>
+
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+
+      <!--need code for entering the input to the reservations.txt-->
+      
 </body>
 </html>
