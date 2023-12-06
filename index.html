@@ -1,0 +1,47 @@
+<!--
+    Home page needs to show menu that let's user pick
+    admin login or reserve a seat
+-->
+<!DOCTYPE html>
+
+<!--boilerplate-->
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--title of our project to show up on the tab-->
+    <title>IT4320 Team6 Final Project</title>
+    <!--link to external css style sheet-->
+    <link rel="stylesheet" href="indexStyle.css">
+</head>
+
+<!--body-->
+<body>
+
+    <div class="navbar">
+        <a class="active" href="index.html">Home</a>
+        <a href="admin.html">Admin</a>
+        <a href="reservations.html">Reservations</a>
+    </div>
+
+    <div class="body">
+        <h1>IT-4320 Team 6 Trip Reservation System</h1>
+        <p>Welcome to the IT-4320 reservation system.</p>
+        <p>Use the select box to choose whether to make a reservation or login in as administrator.</p>
+        <h3>Choose Menu Option:</h3>
+
+        <div class="container">
+            <form action="action_page.php">
+                <select id="Menu" name="Menu">
+                    <option value="choose">Choose an Option</option>
+                    <option value="AdminLogin">Admin Login</option>
+                    <option value="ReserveSeat">Reserve a Seat</option>
+                </select>
+                </form>
+                </div>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>
