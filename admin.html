@@ -18,13 +18,30 @@
 
 <!--body-->
 <body>
+    <!--to show user where they are in our website-->
+    <!--later on, maybe change the links to text-->
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a class="active" href="admin.html">Admin</a>
+        <a href="reservations.html">Reservations</a>
+    </div>
+
     <h1>Administrator Login</h1>
 
-    <ul>
-        <!--links to other pages which will be removed later on-->
-        <li><a href="index.html">Home</a></li>
-        <li><a href="admin.html">Admin</a></li>
-        <li><a href="reservations.html">Reservations</a></li>
-    </ul>
+    <!--need code for checking the input from the passcodes.txt-->
+    <form action="action_page.php" method="post">
+        <div class="container">
+          <label for="uname"><b>Username</b></label>
+          <br>
+          <input type="text" placeholder="Enter Username" name="uname" required>
+          <br>
+          <label for="psw"><b>Password</b></label>
+          <br>
+          <input type="password" placeholder="Enter Password" name="psw" required>
+      
+          <button type="submit">LOGIN</button>
+        </div>
+    </form>
+
 </body>
 </html>
