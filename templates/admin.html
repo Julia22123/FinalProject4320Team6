@@ -1,9 +1,3 @@
-<!--
-    Admin page needs to show login that works
-    shows error message for different wrong inputs
-    and after right input shows the reservations
-    but must be on same page? so maybe use flask to do that.
--->
 <!DOCTYPE html>
 
 <!--boilerplate-->
@@ -18,7 +12,7 @@
 
 <!--body-->
 <body>
-    <!--to show user where they are in our website and links to help them switch pages-->
+    <!-- navbar-->
     <div class="navbar">
         <a href="{{url_for('index')}}">Home</a>
         <a href="{{url_for('admin')}}">Admin</a>
@@ -26,8 +20,9 @@
     </div>
     {% if login == False %}
     <h1>Administrator Login</h1>
-
-    <!--need code for checking the input from the passcodes.txt-->
+    {% if error != None %}
+    <p>{{error}}</p>
+    {% endif %}
     <form method="post">
         <div class="container">
           <label for="uname"><b>Username</b></label>
@@ -44,7 +39,14 @@
     {% endif %}
     {% if login == True %}
     <p>Total Sales: {{ sales }}</p>
-    <p> Chart: {{seats}}</p>
+    <div class="chart">
+        <p>
+          <ul>
+          {% for row in seats %}
+          <l>{{ row }}</l>
+          {% endfor %}
+          </ul>
+        </p>
     {% endif %}
 </body>
 </html>

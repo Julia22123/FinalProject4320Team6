@@ -82,3 +82,11 @@ body{
       float: none;
     }
   }
+  .chart{
+    width:160px;
+    background-color: white;
+    font-size: 17px;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: auto;
+}

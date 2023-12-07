@@ -56,7 +56,7 @@ def get_current_sales():
             if seats[x][y] == "X":
                 sales += costs[x][y]
     #returning both the total sales and the seating chart
-    return sales,seats
+    return sales
 ########################################################################################################################################
 
 
@@ -74,9 +74,9 @@ def index():
     if request.method == "POST":
         choice = request.form["Menu"]
         if choice == "AdminLogin":
-            return render_template('admin.html')
+            return redirect('/admin')
         elif choice == "ReserveSeat":
-            return render_template('reservations.html',seats=get_seating_matrix())
+            return redirect('/reservations')
         else:
             return render_template('index.html')
     #if method is GET then just render the index page
@@ -87,22 +87,25 @@ def index():
 
 @app.route('/admin',methods = ('GET','POST'))
 def admin():
-    #login variable that will indicate if the login attempt was successful
+    
     login = False
-
-    #if the submit button is clicked (POST method), save the username and password
     if request.method =="POST":
-
         username = request.form["uname"]
         password = request.form["psw"]
-        #if the username and password is found in admins_dict, login =True and the current seating and sales are retrieved
-        for x in range(len(admins_dict)):
-            if admins_dict[x]['Username'] == username and str(admins_dict[x]['Password']) == password:
-                login = True
-                sales, seats = get_current_sales() 
-        #admin.html is rendered, with login, sales and seats       
-        return render_template("admin.html",login=login,sales=sales,seats=seats)
-    #if the request method is GET, we do not need the sales and seats variables
+        if username != None and password != None:
+            for x in range(len(admins_dict)):
+                if admins_dict[x]['Username'] == username and str(admins_dict[x]['Password']) == password:
+                    login = True
+                    break
+                else:
+                    continue
+            if login == True:
+                sales = get_current_sales()
+                seats = get_seating_matrix()   
+                return render_template("admin.html",login=login,sales=sales,seats=seats)
+            else:
+                error = "Wrong username/password"
+                return render_template("admin.html",login=login,error=error)
     if request.method == "GET":
         return render_template("admin.html",login=login)
 
@@ -110,9 +113,37 @@ def admin():
 #Still working on this part
 @app.route('/reservations',methods = ("GET","POST"))
 def reservations():
+    seats = get_seating_matrix()   
+    #check if request is GET
     if request.method == "GET":
-        seats = get_seating_matrix()   
         return render_template("reservations.html",seats=seats)
+    
+    #if the request is post 
+    if request.method == "POST":
+        #if the user filled out all fields
+        if request.form["seat"] != "choose" and request.form["row"] != "choose":
+            #get the data from the forms
+            fname = request.form["firstname"]
+            lname = request.form["lastname"]
+            row = request.form["row"]
+            column = request.form["seat"]
+            confirmation = hash(fname)
+            #if the seat was not already taken
+            if seating_matrix[int(row)][int(column)] == "O":
+                seating_matrix[int(row)][int(column)] = "X"
+                f= open("reservations.txt","a")
+                f.write('{}, {}, {}, {}'.format(fname,row,column,confirmation))
+                f.close()
+                seats = get_seating_matrix()
+                return render_template("reservations.html",seats=seats,name=fname,confirmation=confirmation)
+            else:
+                confirmation = "Seat Taken Error"
+                return render_template("reservations.html",seats=seats,confirmation=confirmation)
+        else:
+            confirmation = "Blank Form Error"
+            return render_template("reservations.html",seats=seats,confirmation=confirmation)
+
+
 
 ##################################################################################################################################################
 
