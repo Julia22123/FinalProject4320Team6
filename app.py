@@ -132,7 +132,7 @@ def reservations():
             if seating_matrix[int(row)][int(column)] == "O":
                 seating_matrix[int(row)][int(column)] = "X"
                 f= open("reservations.txt","a")
-                f.write('{}, {}, {}, {}'.format(fname,row,column,confirmation))
+                f.write('{}, {}, {}, {}\n'.format(fname,row,column,confirmation))
                 f.close()
                 seats = get_seating_matrix()
                 return render_template("reservations.html",seats=seats,name=fname,confirmation=confirmation)
