@@ -80,3 +80,24 @@ input[type=text], select, textarea {
     background-color: #45a049;
   }
   
+.seating-chart {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.seating-chart th, .seating-chart td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.seating-chart .reserved {
+    background-color: #f44336; /* Red for reserved seats */
+    color: white;
+}
+
+.seating-chart .available {
+    background-color: #4CAF50; /* Green for available seats */
+    color: white;
+}

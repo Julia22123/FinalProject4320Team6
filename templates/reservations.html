@@ -1,98 +1,75 @@
-<!--
-    Reservations page where user can enter in their reservation and get a e-ticket.
--->
 <!DOCTYPE html>
-
-<!--boilerplate-->
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--title of our project to show up on the tab-->
     <title>IT4320 Team6 Final Project</title>
-    <!--link to external css style sheet-->
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/resStyle.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/resStyle.css') }}">
 </head>
 <body>
-    <!--nav bar-->
     <div class="navbar">
-        <a href="{{url_for('index')}}">Home</a>
-        <a href="{{url_for('admin')}}">Admin</a>
-        <a href="{{url_for('reservations')}}">Reservations</a>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('admin') }}">Admin</a>
+        <a href="{{ url_for('reservations') }}">Reservations</a>
     </div>
 
     <h1>Reserve Your Seat</h1>
 
-    
-    {% if confirmation == "Seat Taken Error" %}
-    <p>You have chosen a seat that was already taken. try again.</p>
-    {% elif confirmation == "Blank Form Error" %}
-    <p>You did not choose a seat</p>
-    {% else %}
-    <p>Congrats {{name}}! You have successfully reserved your seat. Your confirmation number is {{confirmation}}</p>
+    {% if confirmation and confirmation not in ["Seat Taken Error", "Blank Form Error"] %}
+    <p>Congrats {{ name }}! You have successfully reserved your seat. Your confirmation number is {{ confirmation }}</p>
     {% endif %}
-    
 
     <h2>Seating Chart</h2>
-    <p>X = Reserved Seat || O = Available Seat</p>
-    
-    <div class="chart">
-    <p>
-      <ul>
-      {% for row in seats %}
-      <l>{{ row }}</l>
-      {% endfor %}
-      </ul>
-    </p>
-</div>
+    <table class="seating-chart">
+        <thead>
+            <tr>
+                <th>Row/Seat</th>
+                {% for seat_num in range(1, 5) %}
+                <th>Seat {{ seat_num }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row_num in range(1, 13) %}
+            <tr>
+                <td>Row {{ row_num }}</td>
+                {% for seat_num in range(1, 5) %}
+                {% set seat = seats[row_num-1][seat_num-1] %}
+                <td class="{{ 'reserved' if seat == 'X' else 'available' }}">
+                    {{ seat }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <div class="container">
         <form method="post">
-      
-          <label for="fname">First Name</label>
-          <br>
-          <input type="text" id="fname" name="firstname" placeholder="First Name" required>
-          <br>
-          <label for="lname">Last Name</label>
-          <br>
-          <input type="text" id="lname" name="lastname" placeholder="Last Name" required>
-          <br>
+            <label for="fname">First Name</label><br>
+            <input type="text" id="fname" name="firstname" placeholder="First Name" required><br>
 
-          <label for="Row">Choose a Row:</label>
-          <br>
-          <select id="row" name="row" required>
-            <br>
-            <option value="choose">Choose a Row</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-          </select>
+            <label for="lname">Last Name</label><br>
+            <input type="text" id="lname" name="lastname" placeholder="Last Name" required><br>
 
-          <br>
-          <label for="seat">Choose a Seat:</label>
-          <br>
-          <select id="seat" name="seat" required>
-            <option value="choose">Choose an Seat</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-          <br>
+            <label for="row">Choose a Row:</label><br>
+            <select id="row" name="row" required>
+                <option value="choose">Choose a Row</option>
+                {% for i in range(1,13) %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select><br>
 
-          <button type="submit">Submit</button>
+            <label for="seat">Choose a Seat:</label><br>
+            <select id="seat" name="seat" required>
+                <option value="choose">Choose a Seat</option>
+                {% for i in range(1,5) %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select><br>
+
+            <button type="submit">Submit</button>
         </form>
-      </div>
-
-      <!--need code for entering the input to the reservations.txt-->
-      
+    </div>
 </body>
 </html>

@@ -8,6 +8,7 @@
 <!--boilerplate-->
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--title of our project to show up on the tab-->
     <title>IT4320 Team6 Final Project</title>
@@ -42,16 +43,34 @@
         </div>
     </form>
     {% endif %}
-    {% if login == True %}
-    <p>Total Sales: {{ sales }}</p>
-    <div class="chart">
-        <p>
-          <ul>
-          {% for row in seats %}
-          <l>{{ row }}</l>
-          {% endfor %}
-          </ul>
-        </p>
+{%  if login == True %}
+     <div class="seating-chart-container">
+        <h1>Seating Chart</h1>
+        <p>Total Sales: {{ sales }}</p>
+         <table class="seating-chart">
+        <thead>
+            <tr>
+                <th>Row/Seat</th>
+                <th>Seat 1</th>
+                <th>Seat 2</th>
+                <th>Seat 3</th>
+                <th>Seat 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in range(1, 13) %}
+            <tr>
+                <td>Row {{ row }}</td>
+                {% for col in range(1, 5) %}
+                {% set seat = seats[row-1][col-1] %}
+                <td class="{{ 'occupied' if seat.occupied else 'free' }}">
+                    {{ 'X' if seat.occupied else 'O' }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% endif %}
 </body>
 </html>

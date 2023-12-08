@@ -3,16 +3,13 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import uuid
 os.environ["PYTHONUNBUFFERED"] = "0"
-
-
 
 #creating the app
 app = Flask(__name__)
 app.config["DEBUG"] = True
 app.config['SECRET_KEY'] = 'ABCDEFG'
-
-
 
 ##########################################   GLOBAL VARIABLES   #########################################################################
 #parsing the .txt file into a dict, these will not change
@@ -23,24 +20,65 @@ admins_dict = admins.to_dict("records")
 seating_matrix = [["O","O","O","O"] for row in range (12)]
 #####################################################################################################################################
 
-
-
 ######################################   FUCNTIONS   ######################################################################################
 #Cost matrix
 def get_cost_matrix():
     cost_matrix = [[100, 75, 50, 100] for row in range(12)]
     return cost_matrix
 
-#Current seating chart
-def get_seating_matrix():
-    #parsing the reservations.txt to a dict
-    seats = pd.read_csv('reservations.txt')
-    seats_dict = seats.to_dict("records")
-    #loop through seats_dict and change every seat indicated into an "X"
-    for x in range(len(seats_dict)):
-       seating_matrix[seats_dict[x]["Row"]][seats_dict[x]["Column"]] = "X"
-    #return the seating matrix of X's and O's 
+#Load reservations
+def load_reservations():
+    try:
+        with open("reservations.txt", "r") as file:
+            next(file)
+            for line in file:
+                fname, row, column, _ = line.strip().split(', ')
+                row, column = int(row), int(column)
+                seating_matrix[row][column] = "X"
+    except FileNotFoundError:
+        pass  # Handle file not found error
+    except StopIteration:
+        # Handle empty file or file with only header
+        pass
     return seating_matrix
+
+# Update seating chart
+def update_seating_matrix(row, column):
+    # Convert row and column to integers
+    row = int(row)
+    column = int(column)
+    
+    if 0 <= row < len(seating_matrix) and 0 <= column < len(seating_matrix[0]):
+        if seating_matrix[row][column] == "O":
+            seating_matrix[row][column] = "X"
+            return True
+    else:
+        return False
+
+# #Current seating chart
+def get_seating_matrix():
+    seating_matrix = [["O", "O", "O", "O"] for row in range(12)]
+    try:
+        with open("reservations.txt", "r") as file:
+            next(file)  # Skip the header row
+            for line in file:
+                try:
+                    fname, row, column, _ = line.strip().split(', ')
+                    row, column = int(row), int(column)
+                    seating_matrix[row][column] = "X"
+                except ValueError:
+                    # Skip the line if it doesn't have the expected format
+                    print(
+                        f"Skipping line with unexpected format: {line.strip()}")
+    except FileNotFoundError:
+        # Handle the case where the reservations.txt file doesn't exist yet
+        pass
+    return seating_matrix
+
+# Save Reservation
+def save_reservation(fname, row, column, confirmation):
+    with open("reservations.txt", "a") as file:
+        file.write(f'{fname}, {row}, {column}, {confirmation}\n')
 
 #Get current sales
 def get_current_sales():
@@ -59,13 +97,6 @@ def get_current_sales():
     return sales
 ########################################################################################################################################
 
-
-
-
-
-
-
-
 #########################################   ROUTES   ######################################################################################
 # Define routes for three pages
 @app.route('/', methods = ('GET','POST'))
@@ -83,72 +114,63 @@ def index():
     if request.method =="GET":
         return render_template('index.html')
 
-
-
 @app.route('/admin',methods = ('GET','POST'))
 def admin():
-    
     login = False
-    if request.method =="POST":
+    error = None
+    seats = get_seating_matrix()  # Load the seating matrix
+    sales = get_current_sales()  # Calculate total sales
+
+    if request.method == "POST":
         username = request.form["uname"]
         password = request.form["psw"]
-        if username != None and password != None:
-            for x in range(len(admins_dict)):
-                if admins_dict[x]['Username'] == username and str(admins_dict[x]['Password']) == password:
-                    login = True
-                    break
-                else:
-                    continue
-            if login == True:
-                sales = get_current_sales()
-                seats = get_seating_matrix()   
-                return render_template("admin.html",login=login,sales=sales,seats=seats)
-            else:
-                error = "Wrong username/password"
-                return render_template("admin.html",login=login,error=error)
-    if request.method == "GET":
-        return render_template("admin.html",login=login)
 
+        for admin in admins_dict:
+            if admin['Username'] == username and admin['Password'] == password:
+                login = True
+                break
+        if login:
+            return render_template("admin.html", login=login, sales=sales, seats=seats)
+        else:
+            error = "Wrong username/password"
 
+    return render_template("admin.html", login=login, error=error, sales=sales, seats=seats)
+    
 #Still working on this part
 @app.route('/reservations',methods = ("GET","POST"))
 def reservations():
-    seats = get_seating_matrix()   
-    #check if request is GET
-    if request.method == "GET":
-        return render_template("reservations.html",seats=seats)
-    
-    #if the request is post 
+    # Load the current state of the seating matrix
+    seats = get_seating_matrix()
+
     if request.method == "POST":
-        #if the user filled out all fields
-        if request.form["seat"] != "choose" and request.form["row"] != "choose":
-            #get the data from the forms
-            fname = request.form["firstname"]
-            lname = request.form["lastname"]
-            row = request.form["row"]
-            column = request.form["seat"]
-            confirmation = hash(fname)
-            #if the seat was not already taken
-            if seating_matrix[int(row)][int(column)] == "O":
-                seating_matrix[int(row)][int(column)] = "X"
-                f= open("reservations.txt","a")
-                f.write('{}, {}, {}, {}\n'.format(fname,row,column,confirmation))
-                f.close()
+        # Extract form data
+        fname = request.form.get("firstname")
+        lname = request.form.get("lastname")
+        row = request.form.get("row")
+        column = request.form.get("seat")
+
+        # Validate form data
+        if row and column and row != "choose" and column != "choose":
+            # Update seating matrix and save the reservation if the seat is available
+            if update_seating_matrix(row, column):
+                # Generate a unique confirmation number (e.g., using uuid)
+                confirmation = str(uuid.uuid4())
+                save_reservation(fname, row, column, confirmation)
+                print(
+                    f"Saving reservation: {fname}, {row}, {column}, {confirmation}")
+                # Reload the updated seating matrix
                 seats = get_seating_matrix()
-                return render_template("reservations.html",seats=seats,name=fname,confirmation=confirmation)
+                flash(
+                    f"Reservation successful! Your confirmation number is {confirmation}.")
             else:
-                confirmation = "Seat Taken Error"
-                return render_template("reservations.html",seats=seats,confirmation=confirmation)
+                # Seat is already taken
+                flash("Seat already taken, please select another seat.")
         else:
-            confirmation = "Blank Form Error"
-            return render_template("reservations.html",seats=seats,confirmation=confirmation)
+            # Form data is incomplete
+            flash("Please fill out all fields in the form.")
 
-
+    # Render the reservations page with the current state of the seating matrix
+    return render_template("reservations.html", seats=seats)
 
 ##################################################################################################################################################
-
-
-
-
-
 app.run(host="0.0.0.0")

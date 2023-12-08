@@ -90,3 +90,23 @@ body{
     font-family: Arial, Helvetica, sans-serif;
     margin: auto;
 }
+.seating-chart {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.seating-chart td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+}
+
+.seating-chart .occupied {
+    background-color: #f44336; /* Red for occupied seats */
+    color: white;
+}
+
+.seating-chart .free {
+    background-color: #4CAF50; /* Green for available seats */
+    color: white;
+}
