@@ -1,7 +1,7 @@
-from flask import Flask, render_template,request, render_template, url_for,flash, redirect, abort
+from flask import Flask, render_template, request, url_for,flash, redirect, abort
 import pandas as pd
-import numpy as np
-import sys
+import random
+import uuid
 import os
 os.environ["PYTHONUNBUFFERED"] = "0"
 
@@ -33,14 +33,32 @@ def get_cost_matrix():
 
 #Current seating chart
 def get_seating_matrix():
-    #parsing the reservations.txt to a dict
-    seats = pd.read_csv('reservations.txt')
-    seats_dict = seats.to_dict("records")
-    #loop through seats_dict and change every seat indicated into an "X"
-    for x in range(len(seats_dict)):
-       seating_matrix[seats_dict[x]["Row"]][seats_dict[x]["Column"]] = "X"
-    #return the seating matrix of X's and O's 
+    # Re-initialize seating_matrix each time this function is called
+    seating_matrix = [["O", "O", "O", "O"] for _ in range(12)]
+
+    try:
+        with open('reservations.txt', 'r') as file:
+            next(file)  # Skip the header line
+            for line in file:
+                # print("Parsing line:", line.strip()) # Debugging
+                parts = line.strip().split(',')
+                if len(parts) >= 5:
+                    # Extract row and column assuming they are the third and fourth items
+                    row, column = parts[2].strip(), parts[3].strip()
+                    seating_matrix[int(row)][int(column)] = "X"
+    except FileNotFoundError:
+        print("reservations.txt file not found. Creating a new one.")
+        open('reservations.txt', 'w').close()
+    except StopIteration:  # Handle empty file with only header
+        pass
+    except ValueError:
+        # Handle lines that cannot be parsed
+        print("Error parsing a line in reservations.txt")
+        pass
+
     return seating_matrix
+
+
 
 #Get current sales
 def get_current_sales():
@@ -57,6 +75,14 @@ def get_current_sales():
                 sales += costs[x][y]
     #returning both the total sales and the seating chart
     return sales
+
+def generate_custom_uuid():
+    # Generate UUID and convert it to string
+    raw_uuid = str(uuid.uuid4())
+    formatted_uuid = raw_uuid.replace('-', ':')
+    mixed_case_uuid = ''.join(random.choice((str.upper, str.lower))(c) for c in formatted_uuid)
+
+    return mixed_case_uuid
 ########################################################################################################################################
 
 
@@ -111,37 +137,44 @@ def admin():
 
 
 #Still working on this part
-@app.route('/reservations',methods = ("GET","POST"))
+@app.route('/reservations', methods=("GET", "POST"))
 def reservations():
-    seats = get_seating_matrix()   
-    #check if request is GET
     if request.method == "GET":
-        return render_template("reservations.html",seats=seats)
-    
-    #if the request is post 
+        seats = get_seating_matrix()
+        return render_template("reservations.html", seats=seats)
+
     if request.method == "POST":
-        #if the user filled out all fields
-        if request.form["seat"] != "choose" and request.form["row"] != "choose":
-            #get the data from the forms
-            fname = request.form["firstname"]
-            lname = request.form["lastname"]
-            row = request.form["row"]
-            column = request.form["seat"]
-            confirmation = hash(fname)
-            #if the seat was not already taken
-            if seating_matrix[int(row)][int(column)] == "O":
-                seating_matrix[int(row)][int(column)] = "X"
-                f= open("reservations.txt","a")
-                f.write('{}, {}, {}, {}\n'.format(fname,row,column,confirmation))
-                f.close()
-                seats = get_seating_matrix()
-                return render_template("reservations.html",seats=seats,name=fname,confirmation=confirmation)
-            else:
-                confirmation = "Seat Taken Error"
-                return render_template("reservations.html",seats=seats,confirmation=confirmation)
+        # print("Received Form Data:", request.form)
+        
+        fname = request.form.get("firstname")
+        lname = request.form.get("lastname")
+        row = request.form.get("row")
+        seat = request.form.get("seat")
+
+        # Validate form input
+        if not all([fname, lname, row, seat]) or row == "choose" or seat == "choose":
+            seats = get_seating_matrix()  # Refresh the seating matrix
+            return render_template("reservations.html", seats=seats, confirmation="Blank Form Error")
+
+        row, seat = int(row), int(seat)
+        current_seats = get_seating_matrix()  # Get current state of seats
+
+        # Check if seat is available
+        if current_seats[row][seat] == "O":
+            confirmation = generate_custom_uuid()    
+
+            # Write reservation to file
+            try:
+                with open("reservations.txt", "a") as file:
+                    file.write(f"{fname}, {lname}, {row}, {seat}, {confirmation}\n")
+            except IOError:
+                return render_template("reservations.html", seats=current_seats, confirmation="Error in saving reservation.")
+
+            seats = get_seating_matrix()  # Refresh the seating matrix after updating the file
+            return render_template("reservations.html", seats=seats, name=fname, confirmation=confirmation)
+
         else:
-            confirmation = "Blank Form Error"
-            return render_template("reservations.html",seats=seats,confirmation=confirmation)
+            return render_template("reservations.html", seats=current_seats, confirmation="Seat Taken Error")
 
 
 

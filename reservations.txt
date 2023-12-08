@@ -1,12 +1,8 @@
-Name,Row,Column,Ticket
-Alice, 0, 2, AIlNiFcOeTC4320
-Bob, 0, 1, BIoNbFOTC4320
-John, 2, 2, JIoNhFnOTC4320
-Mary, 3, 0, MIaNrFyOTC4320
-Tim, 4, 3, TIiNmFOTC4320
-Janae, 5, 1, JIaNnFaOeTC4320
-Cyd, 8, 2, CIyNdFOTC4320
-Frank, 9, 3, FIrNaFnOkTC4320
-Truman, 1, 0, TIrNuFmOaTnC4320
-Sam, 0, 0, 2462079869246834701
-Bimbo, 11, 0, 7950753970918461424
+FirstName,LastName,Row,Seat,ConfirmationNumber
+First, Last, 0, 0, 31d77926-448b-4873-b555-994e1e4bb5d8
+Gary, Snail, 1, 0, 3cebd4b0-98df-4b8e-8ee7-8e273cceecb6
+Test, Person, 0, 1, a6d64806-4f3b-4a19-b048-67e25619c33d
+Test, Again, 0, 3, bab48aa9-aaf1-4ffe-a1b2-988b093ddb69
+Okay, Test, 0, 2, 14add8b0-65aa-40e4-b0b2-c3d414bfbd61
+Andrew, Veach, 3, 1, B7D3D02E:D238:457B:BCAF:52123E3F4893
+Test, Last, 5, 1, F3d7e7Cd:0a09:4dDe:9CF1:22a69c590845

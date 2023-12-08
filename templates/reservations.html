@@ -23,31 +23,26 @@
     <h1>Reserve Your Seat</h1>
 
     
-    {% if confirmation == "Seat Taken Error" %}
-    <p>You have chosen a seat that was already taken. try again.</p>
+    {% if confirmation and name %}
+      <p>Congrats {{ name }}! You have successfully reserved your seat. Your confirmation number is {{ confirmation }}</p>
+    {% elif confirmation == "Seat Taken Error" %}
+      <p>You have chosen a seat that was already taken. Try again.</p>
     {% elif confirmation == "Blank Form Error" %}
-    <p>You did not choose a seat</p>
-    {% else %}
-    <p>Congrats {{name}}! You have successfully reserved your seat. Your confirmation number is {{confirmation}}</p>
+      <p>You did not choose a seat</p>
     {% endif %}
-    
 
     <h2>Seating Chart</h2>
     <p>X = Reserved Seat || O = Available Seat</p>
     
     <div class="chart">
-    <p>
-      <ul>
       {% for row in seats %}
-      <l>{{ row }}</l>
+        <div>Row {{ loop.index }}: {{ row }}</div>
       {% endfor %}
-      </ul>
-    </p>
-</div>
+    </div>
 
     <div class="container">
         <form method="post">
-      
+          <br>
           <label for="fname">First Name</label>
           <br>
           <input type="text" id="fname" name="firstname" placeholder="First Name" required>
@@ -60,39 +55,26 @@
           <label for="Row">Choose a Row:</label>
           <br>
           <select id="row" name="row" required>
-            <br>
             <option value="choose">Choose a Row</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
+            {% for i in range(1, 13) %}
+            <option value="{{ i-1 }}">{{ i }}</option>
+            {% endfor %}
           </select>
 
           <br>
           <label for="seat">Choose a Seat:</label>
           <br>
           <select id="seat" name="seat" required>
-            <option value="choose">Choose an Seat</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            <option value="choose">Choose a Seat</option>
+            {% for i in range(1, 5) %}
+            <option value="{{ i-1 }}">{{ i }}</option>
+            {% endfor %}
           </select>
           <br>
 
           <button type="submit">Submit</button>
         </form>
       </div>
-
-      <!--need code for entering the input to the reservations.txt-->
       
 </body>
 </html>
