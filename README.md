@@ -2,4 +2,8 @@
 Final Project Files for Team 6 in INFOTC4320
 
 # notes
-needs to have the project built on flask and docker be run on docker container 5002
+To start/test the program open docker desktop 
+than open this project's terminal and enter:
+docker run -d -p 5000:5000 flask
+You than go open your browser and enter in this link:
+http://localhost:5000/
